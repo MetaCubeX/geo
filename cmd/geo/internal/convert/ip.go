@@ -16,12 +16,14 @@ import (
 
 func init() {
 	CommandIP.PersistentFlags().StringVarP(&fromType, "from-type", "i", "", "specific input database type")
-	CommandIP.PersistentFlags().StringVarP(&toType, "to-type", "o", "meta", "set the output database type")
+	CommandIP.PersistentFlags().StringVarP(&toType, "to-type", "o", "meta", "set output database type")
+	CommandIP.PersistentFlags().StringVarP(&output, "output-name", "f", "", "specific output filename")
 }
 
 var (
 	fromType string
 	toType   string
+	output   string
 )
 
 var CommandIP = &cobra.Command{
@@ -41,6 +43,7 @@ func ip(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	buffer.Grow(8 * 1024 * 1024) // 8 MiB
 	fmt.Println("🔁Converting GeoIP database:", fromType, "->", toType)
 	startTime := time.Now()
 
@@ -115,6 +118,10 @@ func ip(cmd *cobra.Command, args []string) error {
 		default:
 			return E.New("unsupported output GeoIP database type: ", toType)
 		}
+	}
+
+	if output != "" {
+		filename = output
 	}
 	err = os.WriteFile(filename, buffer.Bytes(), 0o666)
 	if err != nil {
