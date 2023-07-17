@@ -2,7 +2,7 @@
 
 🗺An easy way to manage all your Geo resources.
 
-Support GeoIP code lookup and converting among all popular GeoIP databases.
+Support GeoIP/GeoSite code lookup and converting among all popular GeoIP/GeoSite databases.
 
 ## Install
 
@@ -33,10 +33,21 @@ geo look 223.5.5.5
 geo look 2001:250::
 ```
 
+#### Site
+
+```shell
+geo look example.com
+```
+
+```shell
+geo look --no-resolve example.com
+```
+
 Supported databases for `look` command:
 
 - MaxMind MMDB
-- V2Ray dat
+- V2Ray dat GeoIP/GeoSite
+- sing-geosite
 - sing-geoip MMDB
 - Meta-geoip MMDB
 
@@ -70,6 +81,18 @@ Supported conversion pairs: (Column=From, Row=To)
 
 Conversion to MaxMind is not available for legal reasons.  
 Conversion to V2Ray is on the TODO list.
+
+#### Site
+
+```shell
+geo convert site -i <input_type> -o <output_type> -f [output_filename] input_filename
+```
+
+```shell
+geo convert site -i v2ray -o sing ./geosite.dat
+```
+
+Only v2ray -> sing conversion is supported for GeoSite.
 
 ## F&Q
 

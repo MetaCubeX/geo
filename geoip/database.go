@@ -16,7 +16,7 @@ const (
 	TypeSing         = "sing-geoip"
 )
 
-var ErrInvalidGeoIPDatabase = errors.New("invalid GeoIP database")
+var ErrInvalidDatabase = errors.New("invalid GeoIP database")
 
 func FromBytes(data []byte) (db *Database, err error) {
 	var mmdbReader *maxminddb.Reader
@@ -48,7 +48,7 @@ func FromBytes(data []byte) (db *Database, err error) {
 		return db, nil
 	}
 
-	return nil, ErrInvalidGeoIPDatabase
+	return nil, ErrInvalidDatabase
 }
 
 func FromFile(file string) (db *Database, err error) {
@@ -85,5 +85,5 @@ func FromFile(file string) (db *Database, err error) {
 		return db, nil
 	}
 
-	return nil, ErrInvalidGeoIPDatabase
+	return nil, ErrInvalidDatabase
 }

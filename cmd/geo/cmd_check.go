@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/metacubex/geo/geoip"
+	"github.com/metacubex/geo/geosite"
 
 	"github.com/spf13/cobra"
 )
@@ -27,25 +28,34 @@ var descriptionPlaceholder = map[string]string{"PLACEHOLDER": "geo"}
 
 func check(cmd *cobra.Command, args []string) error {
 	var (
-		paths []string
-		err   error
+		ipPaths   []string
+		sitePaths []string
+		err       error
 	)
 	if dbPath == "" {
-		paths, err = find()
+		ipPaths, err = findIP()
 		if err != nil {
-			return err
+			fmt.Println("⚠", err)
+		}
+		sitePaths, err = findSite()
+		if err != nil {
+			fmt.Println("⚠", err)
 		}
 	} else {
-		paths = []string{dbPath}
+		ipPaths = []string{dbPath}
+		sitePaths = []string{dbPath}
 	}
 
-	for _, filePath := range paths {
+	for _, filePath := range ipPaths {
 		fmt.Println("🔎Checking", filePath)
 
 		var db *geoip.Database
 		db, err = geoip.FromFile(filePath)
 		if err != nil {
-			return err
+			fmt.Println("❌Failed to load GeoIP database!")
+			fmt.Println("Error:", err)
+			os.Stdout.WriteString("\n")
+			continue
 		}
 		mmdb := db.Reader()
 		if len(mmdb.Metadata.Description) == 0 {
@@ -55,9 +65,9 @@ func check(cmd *cobra.Command, args []string) error {
 
 		err = mmdb.Verify()
 		if err == nil {
-			fmt.Println("👌Successfully verified geo database!")
+			fmt.Println("👌Successfully verified GeoIP database!")
 		} else {
-			fmt.Println("❌Failed to verify geo database!")
+			fmt.Println("❌Failed to verify GeoIP database!")
 			fmt.Println("Error:", err)
 		}
 		if mmdb.Metadata.Description["PLACEHOLDER"] == "geo" {
@@ -81,5 +91,33 @@ func check(cmd *cobra.Command, args []string) error {
 		}
 		os.Stdout.WriteString("\n")
 	}
+
+	for _, filePath := range sitePaths {
+		fmt.Println("🔎Checking", filePath)
+
+		var db *geosite.Database
+		db, err = geosite.FromFile(filePath)
+		if err != nil {
+			fmt.Println("❌Failed to load GeoSite database!")
+			fmt.Println("Error:", err)
+			os.Stdout.WriteString("\n")
+			continue
+		}
+
+		fmt.Println("👌Successfully verified GeoSite database!")
+		fmt.Print("🔢Type: ")
+		switch db.SourceType {
+		case geosite.TypeV2Ray:
+			fmt.Println("V2Ray GeoSite database")
+			fmt.Println("📒Total codes:", db.CodeCount)
+		case geosite.TypeSing:
+			fmt.Println("sing-geosite database")
+			fmt.Println("📒Total codes:", db.CodeCount)
+		default:
+			fmt.Println("unknown:", db.SourceType)
+		}
+		os.Stdout.WriteString("\n")
+	}
+
 	return nil
 }
