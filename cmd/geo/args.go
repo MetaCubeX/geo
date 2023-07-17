@@ -31,7 +31,7 @@ func find() (paths []string, err error) {
 		}
 	}
 	if len(paths) == 0 {
-		err = errors.New("failed to find a geo database, please specific one through argument")
+		err = errors.New("failed to find a geo database, please specify one through argument")
 	}
 	return
 }
