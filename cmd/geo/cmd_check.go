@@ -12,8 +12,8 @@ import (
 )
 
 func init() {
-	commandCheck.PersistentFlags().StringVarP(&dbType, "type", "t", "", "specific database type")
-	commandCheck.PersistentFlags().StringVarP(&dbPath, "file", "f", "", "specific database file path")
+	commandCheck.PersistentFlags().StringVarP(&dbType, "type", "t", "", "specify database type")
+	commandCheck.PersistentFlags().StringVarP(&dbPath, "file", "f", "", "specify database file path")
 	mainCommand.AddCommand(commandCheck)
 }
 

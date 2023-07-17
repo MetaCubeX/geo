@@ -15,9 +15,9 @@ import (
 )
 
 func init() {
-	CommandIP.PersistentFlags().StringVarP(&fromType, "from-type", "i", "", "specific input database type")
+	CommandIP.PersistentFlags().StringVarP(&fromType, "from-type", "i", "", "specify input database type")
 	CommandIP.PersistentFlags().StringVarP(&toType, "to-type", "o", "meta", "set output database type")
-	CommandIP.PersistentFlags().StringVarP(&output, "output-name", "f", "", "specific output filename")
+	CommandIP.PersistentFlags().StringVarP(&output, "output-name", "f", "", "specify output filename")
 }
 
 var (

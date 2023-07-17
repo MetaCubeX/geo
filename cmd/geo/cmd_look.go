@@ -13,8 +13,8 @@ import (
 )
 
 func init() {
-	commandLook.PersistentFlags().StringVarP(&dbType, "type", "t", "", "specific database type")
-	commandLook.PersistentFlags().StringVarP(&dbPath, "file", "f", "", "specific database file path")
+	commandLook.PersistentFlags().StringVarP(&dbType, "type", "t", "", "specify database type")
+	commandLook.PersistentFlags().StringVarP(&dbPath, "file", "f", "", "specify database file path")
 	commandLook.PersistentFlags().BoolVarP(&immediate, "immediate", "i", false, "return immediately as soon as a result is found")
 	mainCommand.AddCommand(commandLook)
 }
