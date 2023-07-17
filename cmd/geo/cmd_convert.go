@@ -8,6 +8,7 @@ import (
 
 func init() {
 	commandConvert.AddCommand(convert.CommandIP)
+	commandConvert.AddCommand(convert.CommandSite)
 	mainCommand.AddCommand(commandConvert)
 }
 

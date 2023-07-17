@@ -20,12 +20,6 @@ func init() {
 	CommandIP.PersistentFlags().StringVarP(&output, "output-name", "f", "", "specify output filename")
 }
 
-var (
-	fromType string
-	toType   string
-	output   string
-)
-
 var CommandIP = &cobra.Command{
 	Use:   "ip",
 	Short: "Convert GeoIP resources",
