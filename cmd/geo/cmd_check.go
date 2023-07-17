@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/metacubex/geo/geoip"
@@ -64,7 +65,9 @@ func check(cmd *cobra.Command, args []string) error {
 		}
 
 		err = mmdb.Verify()
-		if err == nil {
+		if err == nil ||
+			(db.SourceType == geoip.TypeMetaV0 &&
+				strings.Contains(err.Error(), "not see in the data section")) {
 			fmt.Println("👌Successfully verified GeoIP database!")
 		} else {
 			fmt.Println("❌Failed to verify GeoIP database!")

@@ -64,7 +64,7 @@ func V2RayIPToMetaV0(geoipList []*v2raygeo.GeoIP, output io.Writer) error {
 			if ip4 := ipAddress.To4(); ip4 != nil {
 				ipAddress = ip4
 			}
-			ipNet := &net.IPNet{
+			ipNet := net.IPNet{
 				IP:   ipAddress,
 				Mask: net.CIDRMask(int(cidrEntry.Prefix), len(ipAddress)*8),
 			}
@@ -79,7 +79,7 @@ func V2RayIPToMetaV0(geoipList []*v2raygeo.GeoIP, output io.Writer) error {
 			default:
 				panic("bad record type")
 			}
-			err = writer.Insert(ipNet, record)
+			err = writer.Insert(&ipNet, record)
 			if err != nil {
 				return err
 			}
