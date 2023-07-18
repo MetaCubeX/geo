@@ -11,7 +11,7 @@ Requirements:
 - [Go](https://go.dev) 1.20+
 
 ```shell
-go install -v github.com/metacubex/geo/cmd/geo
+go install -v github.com/metacubex/geo/cmd/geo@master
 ```
 
 ## Usage
@@ -94,7 +94,7 @@ geo convert site -i v2ray -o sing ./geosite.dat
 
 Only v2ray -> sing conversion is supported for GeoSite.
 
-## F&Q
+## Frequently Asked Questions (FAQ)
 
 ### Why conversion MaxMind/sing-geoip -> Meta-geoip is not available?
 
@@ -102,7 +102,9 @@ Meta-geoip is designed to support IP with multiple results,
 which will help users who use GeoIP functionality as IPList or IPSet.
 
 For sources such as MaxMind and sing-geoip, which only have a single possible result,
-according to the principle of Occam's razor,
-there is no need to convert to Meta-geoip database.
+according to the principle of Occam's razor, there is no need to convert to Meta-geoip database.  
+In the other hand, when there is only a single result,
+the data structure of Meta-geoip and sing-geoip is completely consistent,
+and even compatible with the parsing logic.
 
 Clash.Meta supports all of these databases, so everything is well. :-)
