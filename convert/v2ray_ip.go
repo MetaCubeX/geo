@@ -3,6 +3,7 @@ package convert
 import (
 	"io"
 	"net"
+	"strings"
 
 	"github.com/metacubex/geo/encoding/v2raygeo"
 
@@ -14,7 +15,10 @@ import (
 
 func V2RayIPToSing(geoipList []*v2raygeo.GeoIP, output io.Writer) error {
 	writer, err := mmdbwriter.New(mmdbwriter.Options{
-		DatabaseType:            "sing-geoip",
+		DatabaseType: "sing-geoip",
+		Languages: common.Map(geoipList, func(it *v2raygeo.GeoIP) string {
+			return strings.ToLower(it.CountryCode)
+		}),
 		IPVersion:               6,
 		RecordSize:              24,
 		Inserter:                inserter.ReplaceWith,
@@ -31,11 +35,11 @@ func V2RayIPToSing(geoipList []*v2raygeo.GeoIP, output io.Writer) error {
 			if ip4 := ipAddress.To4(); ip4 != nil {
 				ipAddress = ip4
 			}
-			ipNet := &net.IPNet{
+			ipNet := net.IPNet{
 				IP:   ipAddress,
 				Mask: net.CIDRMask(int(cidrEntry.Prefix), len(ipAddress)*8),
 			}
-			err = writer.Insert(ipNet, mmdbtype.String(geoipEntry.CountryCode))
+			err = writer.Insert(&ipNet, mmdbtype.String(strings.ToLower(geoipEntry.CountryCode)))
 			if err != nil {
 				return err
 			}
@@ -71,11 +75,11 @@ func V2RayIPToMetaV0(geoipList []*v2raygeo.GeoIP, output io.Writer) error {
 			_, record := writer.Get(ipAddress)
 			switch typedRecord := record.(type) {
 			case nil:
-				record = mmdbtype.String(geoipEntry.CountryCode)
+				record = mmdbtype.String(strings.ToLower(geoipEntry.CountryCode))
 			case mmdbtype.String:
-				record = mmdbtype.Slice{record, mmdbtype.String(geoipEntry.CountryCode)}
+				record = mmdbtype.Slice{record, mmdbtype.String(strings.ToLower(geoipEntry.CountryCode))}
 			case mmdbtype.Slice:
-				record = append(typedRecord, mmdbtype.String(geoipEntry.CountryCode))
+				record = append(typedRecord, mmdbtype.String(strings.ToLower(geoipEntry.CountryCode)))
 			default:
 				panic("bad record type")
 			}
