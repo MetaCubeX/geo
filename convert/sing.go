@@ -3,6 +3,7 @@ package convert
 import (
 	"io"
 	"net"
+	"strings"
 
 	"github.com/maxmind/mmdbwriter"
 	"github.com/maxmind/mmdbwriter/inserter"
@@ -40,7 +41,7 @@ func SingIPToMetaV0(binary []byte, output io.Writer) error {
 			continue
 		}
 
-		err = writer.Insert(ipNet, mmdbtype.String(code))
+		err = writer.Insert(ipNet, mmdbtype.String(strings.ToLower(code)))
 		if err != nil {
 			return err
 		}

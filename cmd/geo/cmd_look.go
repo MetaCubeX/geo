@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/metacubex/geo/geoip"
@@ -70,13 +71,13 @@ func look(cmd *cobra.Command, args []string) error {
 			if immediate {
 				code := db.LookupCode(domainName)
 				if code != "" {
-					result[code] = struct{}{}
+					result[strings.ToLower(code)] = struct{}{}
 					break
 				}
 			} else {
 				codes := db.LookupCodes(domainName)
 				for _, code := range codes {
-					result[code] = struct{}{}
+					result[strings.ToLower(code)] = struct{}{}
 				}
 			}
 		}
@@ -112,7 +113,7 @@ func look(cmd *cobra.Command, args []string) error {
 
 		codes := db.LookupCode(ip)
 		for _, code := range codes {
-			result[code] = struct{}{}
+			result[strings.ToUpper(code)] = struct{}{}
 		}
 
 		if immediate && len(codes) > 0 {

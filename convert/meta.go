@@ -3,6 +3,7 @@ package convert
 import (
 	"io"
 	"net"
+	"strings"
 
 	"github.com/maxmind/mmdbwriter"
 	"github.com/maxmind/mmdbwriter/inserter"
@@ -41,13 +42,14 @@ func MetaV0ToSing(binary []byte, output io.Writer) error {
 			continue
 		case string:
 			if codes != "" {
-				err = writer.Insert(ipNet, mmdbtype.String(codes))
+				err = writer.Insert(ipNet, mmdbtype.String(strings.ToLower(codes)))
 			}
 		case []any: // network returned type of slice is []any
 			err = writer.Insert(ipNet, mmdbtype.String(
-				common.MaxBy(codes, func(it any) int {
-					return len(it.(string))
-				}).(string)))
+				strings.ToLower(
+					common.MaxBy(codes, func(it any) int {
+						return len(it.(string))
+					}).(string))))
 		}
 		if err != nil {
 			return err
