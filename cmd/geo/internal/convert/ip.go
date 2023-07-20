@@ -30,7 +30,7 @@ var CommandIP = &cobra.Command{
 func ip(cmd *cobra.Command, args []string) error {
 	var (
 		buffer   bytes.Buffer
-		filename = time.Now().Format("2006-01-02 15-04-05 MST")
+		filename = time.Now().Format("2006-01-02 15-04-05 -07 MST")
 	)
 	fmt.Println("➕Loading file:", args[0])
 	fileContent, err := os.ReadFile(args[0])
