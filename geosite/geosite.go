@@ -1,3 +1,4 @@
+// Package geosite implements functions for parsing and processing GeoSite resource files.
 package geosite
 
 import (
