@@ -52,6 +52,7 @@ func look(cmd *cobra.Command, args []string) error {
 		}
 	} else {
 		ipPaths = []string{dbPath}
+		sitePaths = []string{dbPath}
 	}
 
 	ip := net.ParseIP(args[0])
