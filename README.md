@@ -65,19 +65,19 @@ geo convert ip -i v2ray -o meta ./geoip.dat
 
 Available types:
 
-- maxmind (MaxMind MMDB)
-- v2ray (V2Ray dat)
-- sing (sing-geoip MMDB)
-- meta (Meta-geoip MMDB)
+- [MaxMind](https://github.com/Dreamacro/maxmind-geoip) (MMDB)
+- [V2Ray-geoip](https://github.com/v2fly/geoip) (dat)
+- [sing-geoip](https://github.com/SagerNet/sing-geoip) (MMDB)
+- [Meta-geoip](https://github.com/MetaCubeX/meta-rules-dat) (MMDB)
 
 Supported conversion pairs: (Column=From, Row=To)
 
-|            | MaxMind | V2Ray | sing-geoip | Meta-geoip |
-|------------|---------|-------|------------|------------|
-| MaxMind    | -       |       |            |            |
-| V2Ray      |         | -     |            |            |
-| sing-geoip | √       | √     | -          | √          |
-| Meta-geoip |         | √     |            | -          |
+|            | MaxMind | V2Ray-geoip | sing-geoip | Meta-geoip|
+|------------|:-------:|:-----------:|:----------:|:---------:|
+| MaxMind    | -       |             |            |           |
+| V2Ray      |         | -           |            |           |
+| sing-geoip | ✅      | ✅          | -          | ✅        |
+| Meta-geoip |         | ✅          |            | -         |
 
 Conversion to MaxMind is not available for legal reasons.  
 Conversion to V2Ray is on the TODO list.
