@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"path/filepath"
 	"runtime"
 
 	"github.com/metacubex/geo"
@@ -14,6 +15,7 @@ import (
 
 var (
 	workingDir string
+	currentDir string
 )
 
 var mainCommand = &cobra.Command{
@@ -43,6 +45,10 @@ func preRun(cmd *cobra.Command, args []string) error {
 		workingDir = path.Join(workingDir, ".geo")
 		return os.MkdirAll(workingDir, 0o750)
 	} else {
+		if !filepath.IsAbs(workingDir) {
+			currentDir, _ := os.Getwd()
+			workingDir = filepath.Join(currentDir, workingDir)
+		}
 		return os.Chdir(workingDir)
 	}
 }
