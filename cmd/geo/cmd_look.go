@@ -93,11 +93,22 @@ func look(cmd *cobra.Command, args []string) error {
 		if noResolve {
 			return nil
 		}
-		ips, err := net.DefaultResolver.LookupIP(context.Background(), "ip", domainName)
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
+
+		go func() {
+			<-ctx.Done()
+			fmt.Print("\n\n🌎Resolved ", domainName, " timeout")
+		}()
+
+		ips, err := net.DefaultResolver.LookupIP(ctx, "ip", domainName)
 		if err != nil {
 			fmt.Println("\n\n❌Fail to resolve", domainName, ", skipped.")
 		}
-		ip = ips[0]
+		if len(ips) != 0 {
+			ip = ips[0]
+		}
+
 		fmt.Print("\n\n🌎Resolved ", domainName, " as ", ip, "\n\n")
 	}
 
