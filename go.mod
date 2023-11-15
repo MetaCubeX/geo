@@ -8,6 +8,7 @@ require (
 	github.com/sagernet/sing v0.2.17
 	github.com/spf13/cobra v1.8.0
 	google.golang.org/protobuf v1.31.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (

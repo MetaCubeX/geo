@@ -72,12 +72,12 @@ Available types:
 
 Supported conversion pairs: (Column=From, Row=To)
 
-|            | MaxMind | V2Ray-geoip | sing-geoip | Meta-geoip|
-|------------|:-------:|:-----------:|:----------:|:---------:|
-| MaxMind    | -       |             |            |           |
-| V2Ray      |         | -           |            |           |
-| sing-geoip | ✅      | ✅          | -          | ✅        |
-| Meta-geoip |         | ✅          |            | -         |
+|            | MaxMind | V2Ray-geoip | sing-geoip | Meta-geoip |
+| ---------- | :-----: | :---------: | :--------: | :--------: |
+| MaxMind    |    -    |             |            |            |
+| V2Ray      |         |      -      |            |            |
+| sing-geoip |   ✅    |     ✅      |     -      |     ✅     |
+| Meta-geoip |         |     ✅      |            |     -      |
 
 Conversion to MaxMind is not available for legal reasons.  
 Conversion to V2Ray is on the TODO list.
@@ -85,7 +85,7 @@ Conversion to V2Ray is on the TODO list.
 #### Site
 
 ```shell
-geo convert site -i <input_type> -o <output_type> -f [output_filename] input_filename
+geo convert site -i <input_type> -o <output_type> -f [output_filename] -c [country code] input_filename
 ```
 
 ```shell

@@ -18,6 +18,7 @@ func init() {
 	CommandSite.PersistentFlags().StringVarP(&fromType, "from-type", "i", "", "specify input database type")
 	CommandSite.PersistentFlags().StringVarP(&toType, "to-type", "o", "meta", "set output database type")
 	CommandSite.PersistentFlags().StringVarP(&output, "output-name", "f", "", "specify output filename")
+	CommandSite.PersistentFlags().StringVarP(&code, "code", "c", "", "specify output code")
 }
 
 var CommandSite = &cobra.Command{
@@ -55,7 +56,12 @@ func site(cmd *cobra.Command, args []string) error {
 				return err
 			}
 			filename += ".db"
-
+		case "clash":
+			err = convert.V2RayToYamlByCode(geositeList, &buffer, code)
+			if err != nil {
+				return err
+			}
+			filename += ".yaml"
 		default:
 			return E.New("unsupported output GeoSite database type: ", toType)
 		}
