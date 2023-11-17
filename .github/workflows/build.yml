@@ -31,12 +31,17 @@ jobs:
           GOOS=windows GOARCH=amd64 go build -o ./bin/geo-windows-amd64.exe ./cmd/geo
           GOOS=windows GOARCH=arm64 go build -o ./bin/geo-windows-arm64.exe ./cmd/geo
 
-      - name: Delete current release assets
-        uses: andreaswilli/delete-release-assets-action@v3.0.0
+      - uses: dev-drprasad/delete-tag-and-release@v1.0 # PRERELEASE is v1.0 and can also be used to test and give us feedback
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: latest
-          deleteOnlyFromDrafts: false
+          tag_name: latest
+          github_token: ${{ secrets.GITHUB_TOKEN }} # (required) a GitHub token with write access to the repo that needs to be modified
+          delete_release: true #(optional) default: true 
+          # repo: <owner>/<repoName> #(optional) target repository. default: repo running this action
+
+      - name: Tag latest
+        run: |
+          git tag latest
+          git push origin latest
 
       - name: Create and Upload Release
         id: upload_release
