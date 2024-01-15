@@ -5,21 +5,23 @@ on:
   push:
     branches:
       - master
+    tags:
+      - "v*"
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+      
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.20"
+          go-version: "1.21"
           check-latest: true
-
+      
       - name: Cross Compile
         run: |
           mkdir bin
@@ -30,26 +32,42 @@ jobs:
           GOOS=darwin GOARCH=arm64 go build -o ./bin/geo-macos-arm64 ./cmd/geo
           GOOS=windows GOARCH=amd64 go build -o ./bin/geo-windows-amd64.exe ./cmd/geo
           GOOS=windows GOARCH=arm64 go build -o ./bin/geo-windows-arm64.exe ./cmd/geo
-
+          
+      - uses: actions/upload-artifact@v3
+        if: ${{  success() }}
+        with:
+          name: artifact
+          path: bin/
+  
+  Upload-Prerelease:
+    permissions: write-all
+    if: ${{ github.ref_type == 'branch' && !startsWith(github.event_name, 'pull_request') }}
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: bin/
+      
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: bin
+      
       - name: Delete current release assets
         uses: 8Mi-Tech/delete-release-assets-action@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           tag: Prerelease-${{ github.ref_name }}
           deleteOnlyFromDrafts: false
-
+      
       - name: Tag Repo
         uses: richardsimko/update-tag@v1.0.6
         with:
           tag_name: Prerelease-${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set Env
-        run: |
-          echo "BUILDTIME=$(TZ=Asia/Shanghai date)" >> $GITHUB_ENV
-        shell: bash
-
+          
       - name: Upload Prerelease
         uses: softprops/action-gh-release@v1
         if: ${{  success() }}
@@ -58,4 +76,27 @@ jobs:
           files: |
             bin/*
           prerelease: true
+          generate_release_notes: true
+  
+  Upload-Release:
+    permissions: write-all
+    if: ${{ github.ref_type=='tag' }}
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: bin/
+      
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: bin
+      
+      - name: Upload Release
+        uses: softprops/action-gh-release@v1
+        if: ${{  success() }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: bin/*
           generate_release_notes: true
