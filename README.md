@@ -103,7 +103,7 @@ geo unpack site ./geosite.dat -d output -c cn
 ```
 
 - -d output dir
-- -c code, unpack all geosite if not set
+- -c code (optional, unpack all geosite if not set)
 
 ## Frequently Asked Questions (FAQ)
 
