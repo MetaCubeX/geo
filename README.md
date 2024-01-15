@@ -94,6 +94,17 @@ geo convert site -i v2ray -o sing ./geosite.dat
 
 Only v2ray -> sing conversion is supported for GeoSite.
 
+### Unpack
+
+#### site
+
+```shell
+geo unpack site ./geosite.dat -d output -c cn
+```
+
+- -d output dir
+- -c code, unpack all geosite if not set
+
 ## Frequently Asked Questions (FAQ)
 
 ### Why conversion MaxMind/sing-geoip -> Meta-geoip is not available?

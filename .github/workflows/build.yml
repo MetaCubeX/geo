@@ -32,19 +32,30 @@ jobs:
           GOOS=windows GOARCH=arm64 go build -o ./bin/geo-windows-arm64.exe ./cmd/geo
 
       - name: Delete current release assets
-        uses: andreaswilli/delete-release-assets-action@v3.0.0
+        uses: 8Mi-Tech/delete-release-assets-action@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: latest
+          tag: Prerelease-${{ github.ref_name }}
           deleteOnlyFromDrafts: false
 
-      - name: Create and Upload Release
-        id: upload_release
-        uses: svenstaro/upload-release-action@v2
+      - name: Tag Repo
+        uses: richardsimko/update-tag@v1.0.6
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          release_name: "α"
-          tag: latest
-          file_glob: true
-          overwrite: true
-          file: ./bin/*
+          tag_name: Prerelease-${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set Env
+        run: |
+          echo "BUILDTIME=$(TZ=Asia/Shanghai date)" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Upload Prerelease
+        uses: softprops/action-gh-release@v1
+        if: ${{  success() }}
+        with:
+          tag_name: Prerelease-${{ github.ref_name }}
+          files: |
+            bin/*
+          prerelease: true
+          generate_release_notes: true

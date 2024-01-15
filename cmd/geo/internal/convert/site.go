@@ -19,12 +19,22 @@ func init() {
 	CommandSite.PersistentFlags().StringVarP(&toType, "to-type", "o", "meta", "set output database type")
 	CommandSite.PersistentFlags().StringVarP(&output, "output-name", "f", "", "specify output filename")
 	CommandSite.PersistentFlags().StringVarP(&code, "code", "c", "", "specify output code")
+
+	CommandUnpackSite.PersistentFlags().StringVarP(&code, "code", "c", "", "specify output code")
+	CommandUnpackSite.PersistentFlags().StringVarP(&outDir, "out-dir", "d", "", "specify output directory")
 }
 
 var CommandSite = &cobra.Command{
 	Use:   "site",
 	Short: "Convert GeoSite resources",
 	RunE:  site,
+	Args:  cobra.ExactArgs(1),
+}
+
+var CommandUnpackSite = &cobra.Command{
+	Use:   "site",
+	Short: "Unpack GeoSite resources",
+	RunE:  unpack,
 	Args:  cobra.ExactArgs(1),
 }
 
@@ -78,5 +88,40 @@ func site(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	fmt.Println("🎉Successfully converted to", filename, "in", time.Now().Sub(startTime))
+	return nil
+}
+
+func unpack(cmd *cobra.Command, args []string) error {
+	fmt.Println("➕Loading file:", args[0])
+	fileContent, err := os.ReadFile(args[0])
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("📦 Unpacking GeoSite database:")
+	startTime := time.Now()
+
+	var geositeList []*v2raygeo.GeoSite
+	geositeList, err = v2raygeo.LoadSite(fileContent)
+	if err != nil {
+		return err
+	}
+
+	if outDir == "" {
+		convert.OutDir = "output"
+	} else {
+		convert.OutDir = outDir
+	}
+	err = os.Mkdir(convert.OutDir, 0o755)
+	if err != nil && !os.IsExist(err) {
+		return err
+	}
+
+	err = convert.UnpackByCode(geositeList, code)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("🎉Successfully Unpacked in", time.Now().Sub(startTime))
 	return nil
 }
