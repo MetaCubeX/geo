@@ -2,8 +2,6 @@ package convert
 
 import (
 	"io"
-	"os"
-	"path"
 	"sort"
 	"strings"
 
@@ -14,8 +12,6 @@ import (
 	"github.com/sagernet/sing/common"
 	"gopkg.in/yaml.v3"
 )
-
-var OutDir string
 
 // V2RaySiteToSing is modified from https://github.com/SagerNet/sing-geosite
 func V2RaySiteToSing(geositeList []*v2raygeo.GeoSite, output io.Writer) error {
@@ -129,7 +125,7 @@ func V2RayToYamlByCode(geositeList []*v2raygeo.GeoSite, output io.Writer, target
 
 	}
 
-	yamlOutput := map[string]interface{}{
+	yamlOutput := map[string]any{
 		"payload": domainMap[targetCode],
 	}
 	yamlBytes, err := yaml.Marshal(yamlOutput)
@@ -137,52 +133,5 @@ func V2RayToYamlByCode(geositeList []*v2raygeo.GeoSite, output io.Writer, target
 		return err
 	}
 	_, err = output.Write(yamlBytes)
-	return err
-
-}
-
-func processGeositeEntry(vGeositeEntry *v2raygeo.GeoSite, targetCode string) {
-	code := strings.ToLower(vGeositeEntry.CountryCode)
-	var domains []string
-	domainMap := map[string][]string{}
-
-	entry := strings.Builder{}
-
-	if targetCode == "" || strings.EqualFold(code, targetCode) {
-		for _, domain := range vGeositeEntry.Domain {
-			entry.Reset()
-			entry.WriteString(domain.Type.String())
-			entry.WriteString(":")
-			entry.WriteString(domain.Value)
-
-			for _, attribute := range domain.Attribute {
-				entry.WriteString(" @" + attribute.Key)
-			}
-
-			domains = append(domains, entry.String())
-		}
-		sort.Strings(domains)
-		domainMap[code] = common.Uniq(domains)
-		WriteByCode(code, domains)
-	}
-}
-
-func UnpackByCode(geositeList []*v2raygeo.GeoSite, targetCode string) error {
-	for _, vGeositeEntry := range geositeList {
-		processGeositeEntry(vGeositeEntry, targetCode)
-	}
-
-	return nil
-}
-
-func WriteByCode(code string, domains []string) error {
-	filename := path.Clean(path.Join(OutDir, code))
-
-	file, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	_, err = file.WriteString(strings.Join(domains, "\n") + "\n")
 	return err
 }

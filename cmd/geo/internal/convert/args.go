@@ -5,5 +5,4 @@ var (
 	toType   string
 	output   string
 	code     string
-	outDir   string
 )
