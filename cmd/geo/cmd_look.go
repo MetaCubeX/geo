@@ -139,5 +139,6 @@ func look(cmd *cobra.Command, args []string) error {
 		os.Stdout.WriteString(code)
 		os.Stdout.WriteString(" ")
 	}
+	os.Stdout.WriteString("\n")
 	return nil
 }
