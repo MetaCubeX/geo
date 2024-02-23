@@ -54,3 +54,7 @@ func (db Database) LookupCode(ip net.IP) []string {
 		panic(F.ToString("unknown GeoIP database type: ", string(db.MemoryType)))
 	}
 }
+
+func (db Database) Close() error {
+	return db.reader.Close()
+}

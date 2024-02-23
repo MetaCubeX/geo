@@ -73,6 +73,7 @@ func check(cmd *cobra.Command, args []string) error {
 			fmt.Println("❌Failed to verify GeoIP database!")
 			fmt.Println("Error:", err)
 		}
+		mmdb.Close()
 		if mmdb.Metadata.Description["PLACEHOLDER"] == "geo" {
 			mmdb.Metadata.Description = nil
 		}

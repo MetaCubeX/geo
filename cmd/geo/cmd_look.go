@@ -124,6 +124,7 @@ func look(cmd *cobra.Command, args []string) error {
 		}
 
 		codes := db.LookupCode(ip)
+		db.Close()
 		for _, code := range codes {
 			result[strings.ToUpper(code)] = struct{}{}
 		}
